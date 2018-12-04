@@ -2,7 +2,6 @@
   :version "0.1"
   :author "PEA"
   :license "MIT"
-  :depends-on (:ningle)
   :components ((:module "src"  ; src/  dir
                 :components
                 ((:file "ningle-bells"))))
