@@ -12,7 +12,27 @@ Ninglex makes several assumptions (and that's how it's intended! -- it's targete
 
 ## Usage
 
-TODO
+Largely the same as Ningle, except you can replace things like
+
+```common-lisp
+(setf (ningle:route *app* "/greet/:name")
+      #'(lambda (params)
+          (format nil "Hello, ~A" (cdr (assoc :name params)))))
+```
+
+with
+
+```common-lisp
+(setf (ningle:route *app* "/greet/:name")
+      #'(lambda (params)
+	      (with-request-params ((n :name))
+		    (string-response
+			  (format nil "Hello, ~A" n)))))
+```
+
+(the string-response isn't completely necessary, but is good practice)
+
+That's basically it, except there's also `html-response`, `json-response`, and `get-param-value` (for retrieving individual params from the param argument), but it's definitely a lot more convienient than just using plain ningle I feel.
 
 ## Acknowledgements
 
