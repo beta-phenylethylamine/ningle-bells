@@ -1,18 +1,14 @@
-(asdf:defsystem ninglex
+(asdf:defsystem ningle-bells
   :version "0.1"
-  :author "Flavio Egoavil"
+  :author "PEA"
   :license "MIT"
-  :depends-on (:ningle
-               :lack 
-               :clack 
-               )
+  :depends-on (:ningle)
   :components ((:module "src"  ; src/  dir
                 :components
-                ((:file "ninglex")
-                )))
+                ((:file "ningle-bells"))))
 
   
-  :description "Ninglex micro-web framework"
+  :description "Some helper functions for ningle"
   :long-description
   #.(with-open-file (stream
                      (merge-pathnames
@@ -26,10 +22,3 @@
                                :fill-pointer t)))
           (setf (fill-pointer seq) (read-sequence seq stream))
           seq))))
-
-;; ;; package with globals for app
-;; (defpackage #:ninglex-config (:export #:*base-directory*))
-
-;; ;; base directory 
-;; (defparameter ninglex-config:*base-directory* 
-;;   (make-pathname :name nil :type nil :defaults *load-truename*))

@@ -1,5 +1,5 @@
 (in-package :cl-user)
-(defpackage ninglex
+(defpackage ningle-bells
   (:use :cl)
   (:import-from :lack.builder
                 :builder)
@@ -17,12 +17,12 @@
    :start
    :stop))
 
-(in-package :ninglex)
+(in-package :ningle-bells)
 
-;; ninglex:*app*
+;; ningle-bells:*app*
 ;; 'global' reference to the instance of your application
 (defvar *app* (make-instance 'ningle:<app>)
-  "Object representing your Ningle/Ninglex application.")
+  "Object representing your Ningle/Ningle-Bells application.")
 
 ;; Left there so you can use them someday...
 (defparameter *http-status-codes*
@@ -117,7 +117,7 @@ Param-list should be list of (symbol param-name-as-string).
   (when *handler*
     "Server already started!")
   (unless *handler*
-    (format t  "Ninglex: Starting server in port ~d... ~%" port)
+    (format t  "Ningle-Bells: Starting server in port ~d... ~%" port)
     (setf *handler*
           (clack:clackup
            ;; use lack builder to enable middlewares
@@ -140,7 +140,7 @@ Param-list should be list of (symbol param-name-as-string).
 (defun stop ()
   "Stop the server"
   (when *handler*
-    (format t "Ninglex: Stopping server... ~%")
+    (format t "Ningle-Bells: Stopping server... ~%")
     (clack:stop *handler*)
     (setf *handler* nil) ;Clear the handler (TODO: is this ok? )
     ))
