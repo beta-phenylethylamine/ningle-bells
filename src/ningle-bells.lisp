@@ -19,11 +19,6 @@
 
 (in-package :ningle-bells)
 
-;; ningle-bells:*app*
-;; 'global' reference to the instance of your application
-(defvar *app* (make-instance 'ningle:<app>)
-  "Object representing your Ningle/Ningle-Bells application.")
-
 ;; Left there so you can use them someday...
 (defparameter *http-status-codes*
   '(:ok 200
@@ -83,65 +78,3 @@ Param-list should be list of (symbol param-name-as-string).
 (defmacro json-response (html-string &rest args)
   "Standard response for JSON"
   `(string-response ,html-string :content-type "application/json" ,@args))
-                   
-
-(defun set-route
-    (route function &key (method :GET))
-  "Assign function to route"
-  (setf (ningle:route *app* route :method method)
-        function))
-
-(defmacro with-route ((route-string params-var &key (method :GET)) &body body)
-  "When calling the route, execute the body, binding the params to params-var"
-  `(set-route ,route-string
-               (lambda (,params-var)
-                 ,@body)
-               :method ,method))
-  
-
-;; Handler for start/stop.
-(defvar *handler* nil
-  "Handler for starting/stopping the server")
-
-;; Quick and dirty function to start server
-(defun start ( &key (server :hunchentoot)
-                    (port 5000)
-                    (debug t)
-                    (silent nil)
-                    (use-thread t)
-                    ;; note: needs trailing / to correctly capture file URLs
-                    (static-path "/static/")
-                    ;; note: needs trailing / to work, as well
-                    (static-root #P"/static/"))
-  "Start the server."
-  (when *handler*
-    "Server already started!")
-  (unless *handler*
-    (format t  "Ningle-Bells: Starting server in port ~d... ~%" port)
-    (setf *handler*
-          (clack:clackup
-           ;; use lack builder to enable middlewares
-           (lack.builder:builder
-            ;; session lack middleware
-            :session
-            ;; "static" lack middleware
-            (:static :path static-path
-                     :root static-root)
-            *app*)
-           ;; Clackup options
-           :server server
-           :port port
-           :debug debug
-           :silent silent
-           :use-thread use-thread
-           ))))
-
-;; Stop server
-(defun stop ()
-  "Stop the server"
-  (when *handler*
-    (format t "Ningle-Bells: Stopping server... ~%")
-    (clack:stop *handler*)
-    (setf *handler* nil) ;Clear the handler (TODO: is this ok? )
-    ))
-
