@@ -1,8 +1,6 @@
 (in-package :cl-user)
 (defpackage ningle-bells
   (:use :cl)
-  (:import-from :lack.builder
-                :builder)
   (:export
    :*app*
    :*http-status-codes*
@@ -26,14 +24,18 @@
     :server-error 500)
   "Useful HTTP status codes")
 
+;; TODO: don't throw an error when this fails, just return nil
+;; Let the function calling it do the error handling itself
+;; We don't need to panic every time a query doesn't get made
+;; Alternatively, add an -or-nil version?
 (defun get-param-value (param-list name)
-  (declare (type string name) (type list param-list))
+  (declare (type list param-list))
   "Obtain the value of a request parameter called 'name' (string)"
   (let ((cons-cell (assoc name param-list :test 'equal)))
-     (if cons-cell
-         (cdr cons-cell)
-         ;; else
-         (error (format nil "Request parameter not found: ~a" name)))))
+    (if cons-cell
+	(cdr cons-cell)
+	;; else
+	(error (format nil "Request parameter not found: ~a" name)))))
 
 (defmacro with-request-params (params-variable param-list &body body)
   (declare (type list param-list) (type symbol params-variable))
@@ -46,14 +48,14 @@ Param-list should be list of (symbol param-name-as-string).
   `(symbol-macrolet
        ,(mapcar (lambda (entry)
                   (let ((var-name 
-                          (first entry)) ; name of var to create (symbol)
-                        (param-name   ; name of param (string)
-                          (second entry)))
-                    (list var-name ; define symbol
+                         (first entry)) ; name of var to create (symbol)
+                        (param-name	; name of param (string)
+                         (second entry)))
+                    (list var-name	; define symbol
                           ;; which will expand to:
                           `(get-param-value ,params-variable ,param-name)
                           )))
-         param-list)
+		param-list)
      ,@body))
 
 ;; Important Note: Clack expects that the return value from
