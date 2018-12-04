@@ -25,7 +25,7 @@ with
 ```common-lisp
 (setf (ningle:route *app* "/greet/:name")
       #'(lambda (params)
-	      (with-request-params ((n :name))
+	      (with-request-params params ((n :name))
 		    (string-response
 			  (format nil "Hello, ~A" n)))))
 ```
